@@ -35,7 +35,7 @@ public class PictureApproximator extends RenderableObject
 		// Coordinates and scale for drawing the images
 		private int scale = 410, refX = 0, refY = 30, allX = 0, allY = 30;
 		// The number of generations to the current solution
-		private int numGenerations = 0, numImprovements = 0;
+		private long numGenerations = 0, numImprovements = 0;
 
 		// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		// ~~~~~~~~~~~~~~~~ Variables to limit draw rate to fps ~~~~~~~~~~~~~~~~~
