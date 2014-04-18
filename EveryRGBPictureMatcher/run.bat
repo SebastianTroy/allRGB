@@ -1,0 +1,1 @@
+java -jar "all RGB hillclimber.jar"
