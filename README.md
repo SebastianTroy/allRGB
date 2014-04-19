@@ -8,6 +8,8 @@ This program makes an image that contains exactly 1 of each colour, then using a
 A few points
 ------------
 
+The allRGB image as shown on screen by java looks considerably worse than it does once saved and viewed by a default image viewer, this is due to the way java is scaling the image.
+
 The greater the range of colours your chosen image has, the closer the match can be.
 
 The greater the balance between red, green and blue, the closer the match will be, for example, an all red image won't work very well as there will be a lot of left over blue and green pixels that will make the image look grainy.
