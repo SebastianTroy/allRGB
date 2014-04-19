@@ -51,15 +51,15 @@ public class PictureApproximator extends RenderableObject
 			{
 				// Make the Reference Image into the instructions
 				referenceImage = new BufferedImage(IMG_SIZE, IMG_SIZE, BufferedImage.TYPE_INT_RGB);
-				
+
 				Graphics2D g = (Graphics2D) referenceImage.getGraphics();
-				
+
 				// Fill the background
 				g.setColor(Color.WHITE);
 				g.fillRect(0, 0, IMG_SIZE, IMG_SIZE);
-				
+
 				g.setFont(g.getFont().deriveFont(200f));
-				
+
 				// Write the instructions
 				g.setColor(Color.BLACK);
 				int y = 700;
@@ -75,7 +75,7 @@ public class PictureApproximator extends RenderableObject
 				y += 250;
 				g.drawString("allow you to view the progress.", 5, y);
 				y += 250;
-				
+
 				g.dispose();
 
 				// Allocate memory for our allRGB approximation
@@ -105,23 +105,20 @@ public class PictureApproximator extends RenderableObject
 				for (int i = 0; i < 10000; i++)
 					{
 						// pick two random pixels
-						int x1 = Rand.int_(0, IMG_SIZE), y1 = Rand.int_(0, IMG_SIZE);
-						int x2 = Rand.int_(0, IMG_SIZE), y2 = Rand.int_(0, IMG_SIZE);
+						int x1 = Rand.int_(IMG_SIZE), y1 = Rand.int_(IMG_SIZE);
+						int x2 = Rand.int_(IMG_SIZE), y2 = Rand.int_(IMG_SIZE);
 
-						// calculate the "fitness" of the way they are currently arranged
-						int oldDifference = getDifference(x1, y1) + getDifference(x2, y2);
+						// calculate the current fitness of the two pixels
+						int oldDifference = getDifference(x1, y1, x1, y1) + getDifference(x2, y2, x2, y2);
+						// calculate the fitness if the pixels were swapped
+						int newDifference = getDifference(x1, y1, x2, y2) + getDifference(x2, y2, x1, y1);
 
-						// swap the pixels around in the allRGBImage
-						swapPixels(x1, y1, x2, y2);
-
-						// calculate the fitness now the pixels have been swapped
-						int newDifference = getDifference(x1, y1) + getDifference(x2, y2);
-
-						// If the change wasn't beneficial, swap the pixels back
-						if (newDifference > oldDifference)
-							swapPixels(x1, y1, x2, y2);
-						else
-							numImprovements++;
+						// If the change was beneficial, swap the pixels around
+						if (newDifference < oldDifference)
+							{
+								swapPixels(x1, y1, x2, y2);
+								numImprovements++;
+							}
 
 						numGenerations++;
 					}
@@ -160,7 +157,7 @@ public class PictureApproximator extends RenderableObject
 				// Give the user the option to limit their search to only image files
 				FileNameExtensionFilter filter = new FileNameExtensionFilter("Images", "jpg", "jpeg", "png", "gif", "bmp");
 				saver.setFileFilter(filter);
-				
+
 				// if the user saves image
 				if (saver.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
 					{
@@ -183,7 +180,7 @@ public class PictureApproximator extends RenderableObject
 				/*
 				 * FIRST - load the image
 				 */
-				
+
 				// Make sure the button in the JFileChooser says the right thing!
 				UIManager.put("FileChooser.openButtonText", "Open");
 
@@ -193,7 +190,7 @@ public class PictureApproximator extends RenderableObject
 				// Give the user the option to limit their search to only image files
 				FileNameExtensionFilter filter = new FileNameExtensionFilter("Images", "jpg", "jpeg", "png", "gif", "bmp");
 				chooser.setFileFilter(filter);
-				
+
 				// if the user chooses an image
 				if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
 					{
@@ -256,10 +253,10 @@ public class PictureApproximator extends RenderableObject
 		 * 
 		 * @return - A number in the range 0->195075, where 0 == identical RGB values and 195075 == opposite RGB values.
 		 */
-		private final int getDifference(int x, int y)
+		private final int getDifference(int refx, int refy, int rgbx, int rgby)
 			{
-				int refRGB = referenceImage.getRGB(x, y);
-				int newRGB = allRGBImage.getRGB(x, y);
+				int refRGB = referenceImage.getRGB(refx, refy);
+				int newRGB = allRGBImage.getRGB(rgbx, rgby);
 
 				int deltaRed = (refRGB >> 16) & 0x0ff - (newRGB >> 16) & 0x0ff;
 				int deltaGreen = (refRGB >> 8) & 0x0ff - (newRGB >> 8) & 0x0ff;
@@ -293,8 +290,8 @@ public class PictureApproximator extends RenderableObject
 		@Override
 		public void componentResized(ComponentEvent e)
 			{
-				//339, 36
-				
+				// 339, 36
+
 				// set the scale to the largest size that doesn't obscure the menu, but no less than 1
 				scale = Math.max(1, Math.min((Main.canvasWidth - 100) / 2, Main.canvasHeight - 60));
 
