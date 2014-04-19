@@ -90,6 +90,9 @@ public class PictureApproximator extends RenderableObject
 				numGenerations = 0;
 				numImprovements = 0;
 			}
+		
+		
+		// TODO work out why every swap is an improvement (leads to shuffline...)
 
 		@Override
 		public final void tick(double secondsPassed)
