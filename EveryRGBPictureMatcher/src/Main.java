@@ -10,7 +10,7 @@ public class Main extends TCode
 				FORCE_SINGLE_THREAD = true;
 
 				programName = "All RGB picture approximator";
-				versionNumber = "1.0";
+				versionNumber = "1.1";
 
 				begin(new PictureApproximator());
 			}
