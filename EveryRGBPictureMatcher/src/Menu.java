@@ -1,28 +1,31 @@
+import java.awt.Color;
 import java.awt.Graphics2D;
 
 import tCode.RenderableObject;
+import tComponents.components.TButton;
+import tComponents.components.TMenu;
 
 public class Menu extends RenderableObject
 	{
-		
-		// TODO create an options menu so that the user can select which algorithm to run
 		protected void initiate()
 			{
+				TMenu menu = new TMenu(0, 0, Main.canvasWidth, Main.canvasHeight, TMenu.VERTICAL);
+				add(menu);
 
-			}
-
-		protected void refresh()
-			{
-
-			}
-
-		public void tick(double secondsPassed)
-			{
-
+				// @formatter:off
+				TButton hillclimber = new TButton("Every RGB Hillclimber"){@Override public final void pressed(){ changeRenderableObject(new EveryRGBHillclimber());}};
+				TButton hillclimberNegative = new TButton("Every RGB Hillclimber Negative"){@Override public final void pressed(){ changeRenderableObject(new EveryRGBHillclimberNegative());}};
+				TButton exact = new TButton("Every RGB Exact"){@Override public final void pressed(){ changeRenderableObject(new EveryRGBExact());}};
+				// @formatter:on
+				
+				menu.add(hillclimber);
+				menu.add(hillclimberNegative);
+				menu.add(exact);
 			}
 
 		protected void render(Graphics2D g)
 			{
-
+				g.setColor(Color.BLACK);
+				g.fillRect(0, 0, Main.canvasWidth, Main.canvasHeight);
 			}
 	}

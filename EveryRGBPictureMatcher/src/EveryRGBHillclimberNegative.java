@@ -15,7 +15,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import tCode.RenderableObject;
 import tools.Rand;
 
-public class PictureApproximator extends RenderableObject
+public class EveryRGBHillclimberNegative extends RenderableObject
 	{
 		// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		// ~~~~~~~~~~~~~~~~~~~~~~~~ Constant Variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -113,8 +113,8 @@ public class PictureApproximator extends RenderableObject
 						// calculate the fitness if the pixels were swapped
 						int newDifference = getDifference(x1, y1, x2, y2) + getDifference(x2, y2, x1, y1);
 
-						// If the change was beneficial, swap the pixels around
-						if (newDifference < oldDifference)
+						// If the change was beneficial, swap the pixels around, want the biggest difference possible
+						if (newDifference > oldDifference)
 							{
 								swapPixels(x1, y1, x2, y2);
 								numImprovements++;
