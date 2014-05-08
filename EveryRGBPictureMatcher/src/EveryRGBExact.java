@@ -84,6 +84,8 @@ public class EveryRGBExact extends RenderableObject
 
 				// Allocate memory for our allRGB approximation
 				createAllRGBImage();
+				
+				Main.frame.setSize(800, 600);
 			}
 
 		@Override
@@ -303,8 +305,6 @@ public class EveryRGBExact extends RenderableObject
 		@Override
 		public void componentResized(ComponentEvent e)
 			{
-				// 339, 36
-
 				// set the scale to the largest size that doesn't obscure the menu, but no less than 1
 				scale = Math.max(1, Math.min((Main.canvasWidth - 100) / 2, Main.canvasHeight - 60));
 

@@ -16,11 +16,13 @@ public class Menu extends RenderableObject
 				TButton hillclimber = new TButton("Every RGB Hillclimber"){@Override public final void pressed(){ changeRenderableObject(new EveryRGBHillclimber());}};
 				TButton hillclimberNegative = new TButton("Every RGB Hillclimber Negative"){@Override public final void pressed(){ changeRenderableObject(new EveryRGBHillclimberNegative());}};
 				TButton exact = new TButton("Every RGB Exact"){@Override public final void pressed(){ changeRenderableObject(new EveryRGBExact());}};
+				TButton ovals = new TButton("Ovals (not everyRGB)"){@Override public final void pressed(){ changeRenderableObject(new PictureApproximator());}};
 				// @formatter:on
 				
 				menu.add(hillclimber);
 				menu.add(hillclimberNegative);
 				menu.add(exact);
+				menu.add(ovals);
 			}
 
 		protected void render(Graphics2D g)

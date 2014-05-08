@@ -80,6 +80,8 @@ public class EveryRGBHillclimberNegative extends RenderableObject
 
 				// Allocate memory for our allRGB approximation
 				createAllRGBImage();
+				
+				Main.frame.setSize(800, 600);
 			}
 
 		@Override
