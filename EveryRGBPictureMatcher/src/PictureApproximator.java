@@ -1,7 +1,7 @@
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.nio.file.Paths;
+import java.io.File;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -121,7 +121,7 @@ public class PictureApproximator extends RenderableObject
 				 */
 
 				// Open a JFileChooser in the current directory
-				JFileChooser chooser = new JFileChooser(Paths.get("").toAbsolutePath().toString());
+				JFileChooser chooser = new JFileChooser(new File(""));
 
 				// Give the user the option to limit their search to only image files
 				FileNameExtensionFilter filter = new FileNameExtensionFilter("Images", "jpg", "jpeg", "png", "gif", "bmp");

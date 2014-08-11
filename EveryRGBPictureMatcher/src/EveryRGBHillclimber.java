@@ -3,8 +3,8 @@ import java.awt.Graphics2D;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
@@ -154,7 +154,7 @@ public class EveryRGBHillclimber extends RenderableObject
 				UIManager.put("FileChooser.openButtonText", "Save");
 
 				// Open a JFileChooser in the current directory
-				JFileChooser saver = new JFileChooser(Paths.get("").toAbsolutePath().toString());
+				JFileChooser saver = new JFileChooser(new File(""));
 
 				// Give the user the option to limit their search to only image files
 				FileNameExtensionFilter filter = new FileNameExtensionFilter("Images", "jpg", "jpeg", "png", "gif", "bmp");
@@ -187,7 +187,7 @@ public class EveryRGBHillclimber extends RenderableObject
 				UIManager.put("FileChooser.openButtonText", "Open");
 
 				// Open a JFileChooser in the current directory
-				JFileChooser chooser = new JFileChooser(Paths.get("").toAbsolutePath().toString());
+				JFileChooser chooser = new JFileChooser(new File(""));
 
 				// Give the user the option to limit their search to only image files
 				FileNameExtensionFilter filter = new FileNameExtensionFilter("Images", "jpg", "jpeg", "png", "gif", "bmp");
