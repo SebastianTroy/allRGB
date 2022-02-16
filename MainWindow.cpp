@@ -1,7 +1,7 @@
 #include "MainWindow.h"
 #include "./ui_MainWindow.h"
 
-#include "LoadImageWidget.h"
+#include "TargetImageWidget.h"
 
 #include <QLocale>
 #include <QDesktopServices>
@@ -20,29 +20,31 @@ MainWindow::MainWindow(QWidget *parent)
     /// Load Image Tab
     ///
 
-    // load / preview / begin
-    connect(ui->loadImageButton, &QPushButton::pressed, ui->loadImagePreview, &LoadImageWidget::onLoadImageRequested);
-    connect(ui->loadImagePreviewButton, &QPushButton::pressed, this, &MainWindow::onLoadImagePreviewRequested);
-    connect(ui->cropAndBeginButton, &QPushButton::pressed, this, &MainWindow::onCropAndBeginRequested);
+    // save / load / preview / begin
+    connect(ui->targetImageSaveButton, &QPushButton::pressed, ui->allRgbWidget, &TargetImageWidget::onSaveImageRequested);
+    connect(ui->targetImageLoadButton, &QPushButton::pressed, ui->allRgbWidget, &TargetImageWidget::onLoadImageRequested);
+    connect(ui->targetImagePreviewButton, &QPushButton::pressed, this, &MainWindow::onPreviewTargetImageRequested);
+    connect(ui->setTargetImageButton, &QPushButton::pressed, this, &MainWindow::onSetTargetImageFromViewRequested);
+    connect(ui->allRgbWidget, &TargetImageWidget::onUseWholeImageRequested, this, &MainWindow::onSetTargetImageFromViewRequested);
 
     // rotation
-    connect(ui->rotationSlider, &QSlider::sliderMoved, ui->loadImagePreview, &LoadImageWidget::SetRotation);
-    connect(ui->rotate90DegreesButton, &QPushButton::pressed, ui->loadImagePreview, &LoadImageWidget::onRotateRequested);
-    connect(ui->loadImagePreview, &LoadImageWidget::onRotationUpdated, ui->rotationSlider, &QSlider::setValue);
+    connect(ui->targetImageRotationSlider, &QSlider::sliderMoved, ui->allRgbWidget, &TargetImageWidget::SetRotation);
+    connect(ui->targetImageRotate90DegreesButton, &QPushButton::pressed, ui->allRgbWidget, &TargetImageWidget::onRotateRequested);
+    connect(ui->allRgbWidget, &TargetImageWidget::onRotationUpdated, ui->targetImageRotationSlider, &QSlider::setValue);
 
     // scale
-    connect(ui->fitToAreaButton, &QPushButton::pressed, ui->loadImagePreview, &LoadImageWidget::onFitToTargetRequested);
-    connect(ui->scaleSpinBox, &QDoubleSpinBox::valueChanged, ui->loadImagePreview, &LoadImageWidget::SetScale);
-    connect(ui->loadImagePreview, &LoadImageWidget::onScaleUpdated, ui->scaleSpinBox, &QDoubleSpinBox::setValue);
+    connect(ui->targetImageFitToAreaButton, &QPushButton::pressed, ui->allRgbWidget, &TargetImageWidget::onFitToTargetRequested);
+    connect(ui->targetImageScaleSpinBox, &QDoubleSpinBox::valueChanged, ui->allRgbWidget, &TargetImageWidget::SetScale);
+    connect(ui->allRgbWidget, &TargetImageWidget::onScaleUpdated, ui->targetImageScaleSpinBox, &QDoubleSpinBox::setValue);
 
     // transform
-    connect(ui->resetOffsetButton, &QPushButton::pressed, ui->loadImagePreview, &LoadImageWidget::ResetTranslation);
-    connect(ui->xOffsetSpinBox, &QDoubleSpinBox::valueChanged, ui->loadImagePreview, &LoadImageWidget::SetTranslationX);
-    connect(ui->yOffsetSpinBox, &QDoubleSpinBox::valueChanged, ui->loadImagePreview, &LoadImageWidget::SetTranslationY);
-    connect(ui->loadImagePreview, &LoadImageWidget::onTranslationUpdated, this, [ui = ui](QPointF translation)
+    connect(ui->targetImageResetTranslationButton, &QPushButton::pressed, ui->allRgbWidget, &TargetImageWidget::ResetTranslation);
+    connect(ui->targetImageXOffsetSpinBox, &QDoubleSpinBox::valueChanged, ui->allRgbWidget, &TargetImageWidget::SetTranslationX);
+    connect(ui->targetImageYOffsetSpinBox, &QDoubleSpinBox::valueChanged, ui->allRgbWidget, &TargetImageWidget::SetTranslationY);
+    connect(ui->allRgbWidget, &TargetImageWidget::onTranslationUpdated, this, [ui = ui](QPointF translation)
     {
-        ui->xOffsetSpinBox->setValue(translation.rx());
-        ui->yOffsetSpinBox->setValue(translation.ry());
+        ui->targetImageXOffsetSpinBox->setValue(translation.rx());
+        ui->targetImageYOffsetSpinBox->setValue(translation.ry());
     });
 
     // Link to website
@@ -57,24 +59,28 @@ MainWindow::MainWindow(QWidget *parent)
     ///
 
     // View
-    connect(ui->allRgbResetPixelsButton, &QPushButton::pressed, ui->allRgbPreviewWidget, &ViewAllRgbWidget::onResetPixelsRequested);
-    connect(ui->allRgbResetViewButton, &QPushButton::pressed, ui->allRgbPreviewWidget, &ViewAllRgbWidget::onResetViewRequested);
+    connect(ui->allRgbUpdateTargetButton, &QPushButton::pressed, this, &MainWindow::onSetTargetImageFromViewRequested);
+    connect(ui->allRgbResetViewButton, &QPushButton::pressed, ui->allRgbPreviewWidget, &AllRgbWidget::onResetViewRequested);
+
+    // Starting pixels
+    connect(ui->allRgbResetPixelsButton, &QPushButton::pressed, ui->allRgbPreviewWidget, &AllRgbWidget::onResetPixelsRequested);
+    connect(ui->allRgbLoadButton, &QPushButton::pressed, ui->allRgbPreviewWidget, &AllRgbWidget::onLoadPixelsRequested);
 
     // All RGB
-    connect(ui->allRgbStartButton, &QPushButton::pressed, ui->allRgbPreviewWidget, &ViewAllRgbWidget::onStartRequested);
-    connect(ui->allRgbStopButton, &QPushButton::pressed, ui->allRgbPreviewWidget, &ViewAllRgbWidget::onStopRequested);
-    connect(ui->allRgbPreviewWidget, &ViewAllRgbWidget::onIterationsChanged, this, [ui = ui](int iterations)
+    connect(ui->allRgbStartButton, &QPushButton::pressed, ui->allRgbPreviewWidget, &AllRgbWidget::onStartRequested);
+    connect(ui->allRgbStopButton, &QPushButton::pressed, ui->allRgbPreviewWidget, &AllRgbWidget::onStopRequested);
+    connect(ui->allRgbPreviewWidget, &AllRgbWidget::onIterationsChanged, this, [ui = ui](quint64 iterations)
     {
-        ui->iterationsValueLabel->setText(QLocale::system().toString(iterations));
+        ui->allRGBIterationsValueLabel->setText(QLocale::system().toString(iterations));
     });
-    connect(ui->allRgbPreviewWidget, &ViewAllRgbWidget::onImprovementsChanged, this, [ui = ui](int improvements)
+    connect(ui->allRgbPreviewWidget, &AllRgbWidget::onImprovementsChanged, this, [ui = ui](quint64 improvements)
     {
-        ui->improvementsValueLabel->setText(QLocale::system().toString(improvements));
+        ui->allRGBImprovementsValueLabel->setText(QLocale::system().toString(improvements));
     });
 
     // Result
-    connect(ui->allRgbPreviewButton, &QPushButton::pressed, this, &MainWindow::onAllRgbPreviewRequested);
-    connect(ui->allRgbSaveButton, &QPushButton::pressed, ui->allRgbPreviewWidget, &ViewAllRgbWidget::onSaveImageRequested);
+    connect(ui->allRgbPreviewButton, &QPushButton::pressed, this, &MainWindow::onPreviewAllRgbRequested);
+    connect(ui->allRgbSaveButton, &QPushButton::pressed, ui->allRgbPreviewWidget, &AllRgbWidget::onSaveImageRequested);
 }
 
 MainWindow::~MainWindow()
@@ -82,29 +88,31 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::onLoadImagePreviewRequested()
+void MainWindow::onPreviewTargetImageRequested()
 {
-    OpenImagePreviewWindow(ui->loadImagePreview->GetImageInViewTargetArea());
+    OpenImagePreviewWindow(ui->allRgbWidget->GetImageInViewTargetArea());
 }
 
-void MainWindow::onAllRgbPreviewRequested()
+void MainWindow::onPreviewAllRgbRequested()
 {
     OpenImagePreviewWindow(ui->allRgbPreviewWidget->GetAllRgbImage());
 }
 
-void MainWindow::onCropAndBeginRequested()
+void MainWindow::onSetTargetImageFromViewRequested()
 {
-    ui->allRgbPreviewWidget->onStopRequested();
-    ui->allRgbPreviewWidget->SetTargetImage(ui->loadImagePreview->GetImageInViewTargetArea());
-    ui->allRgbPreviewWidget->onResetPixelsRequested();
-    ui->allRgbPreviewWidget->onResetViewRequested();
-    ui->allRgbPreviewWidget->onStartRequested();
+    ui->allRgbPreviewWidget->SetTargetImage(ui->allRgbWidget->GetImageInViewTargetArea());
+    ui->tabWidget->setCurrentIndex(1);
+}
+
+void MainWindow::onSetTargetImageFromEntireImageRequested()
+{
+    ui->allRgbPreviewWidget->SetTargetImage(ui->allRgbWidget->GetWholeImage());
     ui->tabWidget->setCurrentIndex(1);
 }
 
 void MainWindow::showEvent(QShowEvent* /*event*/)
 {
-    ui->loadImagePreview->LoadImage(":DefaultImage.jpg");
+    ui->allRgbWidget->LoadImage(":DefaultImage.jpg");
 }
 
 void MainWindow::OpenImagePreviewWindow(const QImage& toPreview)

@@ -18,11 +18,11 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="loadImageTab">
        <attribute name="title">
-        <string>Load Image</string>
+        <string>Target Image</string>
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
@@ -31,64 +31,11 @@
            <string/>
           </property>
           <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,0">
-           <item row="8" column="0" colspan="3">
-            <spacer name="loadImageOptionsSpacer">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
+           <item row="3" column="0">
+            <widget class="QLabel" name="targetImageScaleLabel">
+             <property name="text">
+              <string>Scale</string>
              </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="4" column="1" rowspan="2">
-            <widget class="QWidget" name="widget" native="true">
-             <layout class="QVBoxLayout" name="verticalLayout">
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-              <item>
-               <widget class="QDoubleSpinBox" name="xOffsetSpinBox">
-                <property name="prefix">
-                 <string>X: </string>
-                </property>
-                <property name="minimum">
-                 <double>-4096.000000000000000</double>
-                </property>
-                <property name="maximum">
-                 <double>4096.000000000000000</double>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QDoubleSpinBox" name="yOffsetSpinBox">
-                <property name="prefix">
-                 <string>Y: </string>
-                </property>
-                <property name="suffix">
-                 <string/>
-                </property>
-                <property name="minimum">
-                 <double>-4096.000000000000000</double>
-                </property>
-                <property name="maximum">
-                 <double>4096.000000000000000</double>
-                </property>
-               </widget>
-              </item>
-             </layout>
             </widget>
            </item>
            <item row="0" column="0" colspan="3">
@@ -106,43 +53,69 @@ p, li { white-space: pre-wrap; }
              </property>
             </widget>
            </item>
-           <item row="3" column="2">
-            <widget class="QPushButton" name="fitToAreaButton">
-             <property name="text">
-              <string>Fit to Area</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="scaleLabel">
-             <property name="text">
-              <string>Scale</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0" colspan="3">
-            <widget class="QPushButton" name="loadImageButton">
-             <property name="text">
-              <string>Load Image</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="2" rowspan="2">
-            <widget class="QPushButton" name="resetOffsetButton">
-             <property name="text">
-              <string>Reset Offset</string>
-             </property>
-            </widget>
-           </item>
            <item row="2" column="2">
-            <widget class="QPushButton" name="rotate90DegreesButton">
+            <widget class="QPushButton" name="targetImageRotate90DegreesButton">
              <property name="text">
               <string>Rotate 90 degrees</string>
              </property>
             </widget>
            </item>
+           <item row="1" column="0" colspan="3">
+            <widget class="QPushButton" name="targetImageLoadButton">
+             <property name="text">
+              <string>Load Image</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1" rowspan="2">
+            <widget class="QWidget" name="widget" native="true">
+             <layout class="QVBoxLayout" name="verticalLayout">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QDoubleSpinBox" name="targetImageXOffsetSpinBox">
+                <property name="prefix">
+                 <string>X: </string>
+                </property>
+                <property name="minimum">
+                 <double>-4096.000000000000000</double>
+                </property>
+                <property name="maximum">
+                 <double>4096.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QDoubleSpinBox" name="targetImageYOffsetSpinBox">
+                <property name="prefix">
+                 <string>Y: </string>
+                </property>
+                <property name="suffix">
+                 <string/>
+                </property>
+                <property name="minimum">
+                 <double>-4096.000000000000000</double>
+                </property>
+                <property name="maximum">
+                 <double>4096.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
            <item row="3" column="1">
-            <widget class="QDoubleSpinBox" name="scaleSpinBox">
+            <widget class="QDoubleSpinBox" name="targetImageScaleSpinBox">
              <property name="decimals">
               <number>2</number>
              </property>
@@ -163,36 +136,22 @@ p, li { white-space: pre-wrap; }
              </property>
             </widget>
            </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="rotationLabel">
-             <property name="text">
-              <string>Rotation</string>
-             </property>
-            </widget>
-           </item>
-           <item row="7" column="0" colspan="3">
-            <widget class="QPushButton" name="cropAndBeginButton">
-             <property name="text">
-              <string>Crop and Begin</string>
-             </property>
-            </widget>
-           </item>
-           <item row="6" column="0" colspan="3">
-            <widget class="QPushButton" name="loadImagePreviewButton">
-             <property name="text">
-              <string>Preview</string>
-             </property>
-            </widget>
-           </item>
            <item row="4" column="0" rowspan="2">
-            <widget class="QLabel" name="offsetLabel">
+            <widget class="QLabel" name="targetImageOffsetLabel">
              <property name="text">
               <string>Offset</string>
              </property>
             </widget>
            </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="targetImageRotationLabel">
+             <property name="text">
+              <string>Rotation</string>
+             </property>
+            </widget>
+           </item>
            <item row="2" column="1">
-            <widget class="QSlider" name="rotationSlider">
+            <widget class="QSlider" name="targetImageRotationSlider">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -207,10 +166,58 @@ p, li { white-space: pre-wrap; }
              </property>
             </widget>
            </item>
-           <item row="9" column="0" colspan="3">
+           <item row="6" column="0" colspan="3">
+            <widget class="QPushButton" name="targetImagePreviewButton">
+             <property name="text">
+              <string>Preview</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="2" rowspan="2">
+            <widget class="QPushButton" name="targetImageResetTranslationButton">
+             <property name="text">
+              <string>Reset Offset</string>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="0" colspan="3">
+            <widget class="QPushButton" name="setTargetImageButton">
+             <property name="text">
+              <string>Set Target</string>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="0" colspan="3">
             <widget class="QPushButton" name="moreByTroyDevButton">
              <property name="text">
               <string>More by TroyDev</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="2">
+            <widget class="QPushButton" name="targetImageFitToAreaButton">
+             <property name="text">
+              <string>Fit to Area</string>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="0" colspan="3">
+            <spacer name="targetImageOptionsSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="7" column="0" colspan="3">
+            <widget class="QPushButton" name="targetImageSaveButton">
+             <property name="text">
+              <string>Save</string>
              </property>
             </widget>
            </item>
@@ -218,7 +225,7 @@ p, li { white-space: pre-wrap; }
          </widget>
         </item>
         <item>
-         <widget class="LoadImageWidget" name="loadImagePreview" native="true">
+         <widget class="TargetImageWidget" name="allRgbWidget" native="true">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>0</horstretch>
@@ -231,7 +238,7 @@ p, li { white-space: pre-wrap; }
       </widget>
       <widget class="QWidget" name="allRgbTab">
        <attribute name="title">
-        <string>All RGB Preview</string>
+        <string>All RGB Image</string>
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
@@ -240,7 +247,69 @@ p, li { white-space: pre-wrap; }
            <string/>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
+           <item row="0" column="0" colspan="2">
+            <widget class="QPushButton" name="allRgbResetPixelsButton">
+             <property name="text">
+              <string>Reset allRGB</string>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="0" colspan="2">
+            <widget class="QPushButton" name="allRgbSaveButton">
+             <property name="text">
+              <string>Save</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QPushButton" name="allRgbStartButton">
+             <property name="text">
+              <string>Start</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" colspan="2">
+            <widget class="QPushButton" name="allRgbLoadButton">
+             <property name="text">
+              <string>Load allRGB</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <widget class="QLabel" name="allRGBIterationLabel">
+             <property name="text">
+              <string>Iterations:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="0">
+            <widget class="QLabel" name="ImprovementsLabel">
+             <property name="text">
+              <string>Improvements:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0" colspan="2">
+            <widget class="QPushButton" name="allRgbResetViewButton">
+             <property name="text">
+              <string>Reset View</string>
+             </property>
+            </widget>
+           </item>
            <item row="7" column="0" colspan="2">
+            <widget class="QPushButton" name="allRgbPreviewButton">
+             <property name="text">
+              <string>Preview</string>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="0" colspan="2">
             <spacer name="allRgbOptionsSpacer">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -253,73 +322,37 @@ p, li { white-space: pre-wrap; }
              </property>
             </spacer>
            </item>
-           <item row="6" column="0" colspan="2">
-            <widget class="QPushButton" name="allRgbSaveButton">
-             <property name="text">
-              <string>Save</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0" colspan="2">
-            <widget class="QPushButton" name="allRgbResetViewButton">
-             <property name="text">
-              <string>Reset View</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="1">
-            <widget class="QLabel" name="iterationsValueLabel">
+           <item row="6" column="1">
+            <widget class="QLabel" name="allRGBImprovementsValueLabel">
              <property name="text">
               <string>00000000000000</string>
              </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
             </widget>
            </item>
-           <item row="4" column="0">
-            <widget class="QLabel" name="ImprovementsLabel">
+           <item row="5" column="1">
+            <widget class="QLabel" name="allRGBIterationsValueLabel">
              <property name="text">
-              <string>Improvements:</string>
+              <string>00000000000000</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
              </property>
             </widget>
            </item>
            <item row="4" column="1">
-            <widget class="QLabel" name="improvementsValueLabel">
-             <property name="text">
-              <string>00000000000000</string>
-             </property>
-            </widget>
-           </item>
-           <item row="5" column="0" colspan="2">
-            <widget class="QPushButton" name="allRgbPreviewButton">
-             <property name="text">
-              <string>Preview</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0" colspan="2">
-            <widget class="QPushButton" name="allRgbResetPixelsButton">
-             <property name="text">
-              <string>Reset Pixels to Default</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="iterationLabel">
-             <property name="text">
-              <string>Iterations:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QPushButton" name="allRgbStartButton">
-             <property name="text">
-              <string>Start</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
             <widget class="QPushButton" name="allRgbStopButton">
              <property name="text">
               <string>Stop</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0" colspan="2">
+            <widget class="QPushButton" name="allRgbUpdateTargetButton">
+             <property name="text">
+              <string>Update Target</string>
              </property>
             </widget>
            </item>
@@ -327,7 +360,7 @@ p, li { white-space: pre-wrap; }
          </widget>
         </item>
         <item>
-         <widget class="ViewAllRgbWidget" name="allRgbPreviewWidget" native="true">
+         <widget class="AllRgbWidget" name="allRgbPreviewWidget" native="true">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>0</horstretch>
@@ -360,15 +393,15 @@ p, li { white-space: pre-wrap; }
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LoadImageWidget</class>
+   <class>TargetImageWidget</class>
    <extends>QWidget</extends>
-   <header>LoadImageWidget.h</header>
+   <header>TargetImageWidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>ViewAllRgbWidget</class>
+   <class>AllRgbWidget</class>
    <extends>QWidget</extends>
-   <header>ViewAllRgbWidget.h</header>
+   <header>AllRgbWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

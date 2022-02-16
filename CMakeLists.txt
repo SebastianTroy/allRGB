@@ -20,10 +20,10 @@ set(PROJECT_SOURCES
         MainWindow.h
         PanAndZoomWidget.h
         PanAndZoomWidget.cpp
-        LoadImageWidget.h
-        LoadImageWidget.cpp
-        ViewAllRgbWidget.h
-        ViewAllRgbWidget.cpp
+        TargetImageWidget.h
+        TargetImageWidget.cpp
+        AllRgbWidget.h
+        AllRgbWidget.cpp
         MainWindow.ui
         Resources.qrc
 )

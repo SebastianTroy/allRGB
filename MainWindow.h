@@ -14,9 +14,10 @@ public:
     ~MainWindow();
 
 public slots:
-    void onLoadImagePreviewRequested();
-    void onAllRgbPreviewRequested();
-    void onCropAndBeginRequested();
+    void onPreviewTargetImageRequested();
+    void onPreviewAllRgbRequested();
+    void onSetTargetImageFromViewRequested();
+    void onSetTargetImageFromEntireImageRequested();
 
 protected:
     virtual void showEvent(QShowEvent* event) override;

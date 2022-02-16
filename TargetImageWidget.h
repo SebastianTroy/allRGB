@@ -1,5 +1,5 @@
-#ifndef LOADIMAGEWIDGET_H
-#define LOADIMAGEWIDGET_H
+#ifndef TARGETIMAGEWIDGET_H
+#define TARGETIMAGEWIDGET_H
 
 #include "PanAndZoomWidget.h"
 
@@ -8,16 +8,21 @@
  * aims to allow a user to load, scale, translate and rotate any image so that
  * it fills a 4096 * 4096 area.
  */
-class LoadImageWidget : public PanAndZoomWidget {
+class TargetImageWidget : public PanAndZoomWidget {
     Q_OBJECT
 public:
-    explicit LoadImageWidget(QWidget* parent = nullptr);
+    explicit TargetImageWidget(QWidget* parent = nullptr);
 
     void LoadImage(QString fileName);
     QImage GetImageInViewTargetArea() const;
+    QImage GetWholeImage() const;
+
+signals:
+    void onUseWholeImageRequested();
 
 public slots:
     void onLoadImageRequested();
+    void onSaveImageRequested();
     void onResetTranslationRequested();
     void onFitToTargetRequested();
     void onRotateRequested();
@@ -29,6 +34,7 @@ private:
     QImage image_;
 
     void PaintImage(QPainter& p) const;
+    QRectF GetTargetRect() const;
 };
 
-#endif // LOADIMAGEWIDGET_H
+#endif // TARGETIMAGEWIDGET_H
