@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="DefaultImage.jpg">C:/Users/Troyseph/Desktop/Java and Mocha July 2008.JPG</file>
+        <file alias="Logo.png">C:/Users/Troyseph/Desktop/logo.png</file>
+    </qresource>
+</RCC>
