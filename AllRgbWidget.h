@@ -2,12 +2,12 @@
 #define ALLRGBWIDGET_H
 
 #include "PanAndZoomWidget.h"
+#include "AlgorithmBase.h"
 
 #include <QImage>
 #include <QTimer>
 
 #include <functional>
-#include <random>
 
 class AllRgbWidget : public PanAndZoomWidget {
     Q_OBJECT
@@ -15,9 +15,12 @@ public:
     explicit AllRgbWidget(QWidget *parent = nullptr);
 
     void SetTargetImage(const QImage& targetImage);
+    void SetAlgorithm(std::unique_ptr<AlgorithmBase>&& algoritm);
     QImage GetAllRgbImage() const;
 
 signals:
+    void onTargetUpdated(QImage target);
+    void onAllRgbUpdated(QImage allRgb);
     void onIterationsChanged(quint64 totalIterations);
     void onImprovementsChanged(quint64 totalImprovements);
 
@@ -33,26 +36,19 @@ protected:
     virtual void paintEvent(QPaintEvent* event) override;
     virtual void showEvent(QShowEvent* event) override;
 
-private:
-    inline static constexpr int allRgbEdge_ = 4096;
-    inline static std::mt19937 entropy_ = std::mt19937();
+private slots:
+    void onUpdateFromAlgorithm(QImage allRgb);
 
+private:
     QImage target_;
     QImage targetThumbnail_;
     QImage allRgb_;
 
-    quint64 iterations_;
-    quint64 improvements_;
+    std::unique_ptr<AlgorithmBase> algorithm_;
 
-    QTimer thread_;
+    QTimer getUpdateTimer_;
 
-    void CreateDefaultTarget();
     void ForEachPixel(QImage& target, const std::function<void(QImage& target, int x, int y)>& action);
-    void ImproveAllRgbImage();
-
-    int RandomNumber(int min, int max) const;
-    int ColourDifference(QRgb a, QRgb b) const;
-
 };
 
 #endif // ALLRGBWIDGET_H

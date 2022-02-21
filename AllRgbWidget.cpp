@@ -6,17 +6,15 @@
 
 #include <cstdlib>
 #include <vector>
+#include <memory>
+
 AllRgbWidget::AllRgbWidget(QWidget *parent)
     : PanAndZoomWidget{parent}
-    , iterations_(0)
-    , improvements_(0)
 {
-    CreateDefaultTarget();
     onResetPixelsRequested();
 
-    thread_.setSingleShot(false);
-    thread_.setInterval(0);
-    connect(&thread_, &QTimer::timeout, this, &AllRgbWidget::ImproveAllRgbImage);
+    getUpdateTimer_.setSingleShot(false);
+    getUpdateTimer_.setInterval(1000);
 }
 
 void AllRgbWidget::SetTargetImage(const QImage& targetImage)
@@ -24,12 +22,25 @@ void AllRgbWidget::SetTargetImage(const QImage& targetImage)
     if (targetImage != target_) {
         target_ = targetImage;
         targetThumbnail_ = target_.scaled(100, 100);
-
-        iterations_ = 0;
-        improvements_ = 0;
-
+        emit onTargetUpdated(target_);
         update();
     }
+}
+
+void AllRgbWidget::SetAlgorithm(std::unique_ptr<AlgorithmBase>&& algoritm)
+{
+    algorithm_ = std::move(algoritm);
+    algorithm_->SetTargetImage(target_);
+    algorithm_->SetRgbImage(allRgb_);
+
+    connect(&getUpdateTimer_, &QTimer::timeout, algorithm_.get(), &AlgorithmBase::onGetUpdateRequested, Qt::QueuedConnection);
+
+    connect(this, &AllRgbWidget::onTargetUpdated, algorithm_.get(), &AlgorithmBase::SetTargetImage, Qt::QueuedConnection);
+    connect(this, &AllRgbWidget::onAllRgbUpdated, algorithm_.get(), &AlgorithmBase::SetRgbImage, Qt::QueuedConnection);
+
+    connect(algorithm_.get(), &AlgorithmBase::onIterationsChanged, this, &AllRgbWidget::onIterationsChanged, Qt::QueuedConnection);
+    connect(algorithm_.get(), &AlgorithmBase::onImprovementsChanged, this, &AllRgbWidget::onImprovementsChanged, Qt::QueuedConnection);
+    connect(algorithm_.get(), &AlgorithmBase::onUpdated, this, &AllRgbWidget::onUpdateFromAlgorithm, Qt::QueuedConnection);
 }
 
 QImage AllRgbWidget::GetAllRgbImage() const
@@ -39,19 +50,14 @@ QImage AllRgbWidget::GetAllRgbImage() const
 
 void AllRgbWidget::onResetPixelsRequested()
 {
-    allRgb_ = QImage(allRgbEdge_, allRgbEdge_, QImage::Format::Format_RGB32);
+    allRgb_ = QImage(4096, 4096, QImage::Format::Format_RGB32);
 
     ForEachPixel(allRgb_, [](QImage& target, int x, int y)
     {
         target.setPixel(x, y, x + (target.width() * y));
     });
 
-    iterations_ = 0;
-    improvements_ = 0;
-
-    update();
-    emit onIterationsChanged(iterations_);
-    emit onImprovementsChanged(improvements_);
+    emit onAllRgbUpdated(allRgb_);
 }
 
 void AllRgbWidget::onLoadPixelsRequested()
@@ -59,7 +65,7 @@ void AllRgbWidget::onLoadPixelsRequested()
     QString fileName = QFileDialog::getOpenFileName(this, "Select Image", "", "Images (*.png *.xpm *.jpg)");
     QImage newPixels(fileName);
 
-    if (newPixels.width() != allRgbEdge_ || newPixels.height() != allRgbEdge_) {
+    if (newPixels.width() != 4096 || newPixels.height() != 4096) {
         QMessageBox::warning(this, "Invalid allRGB image", QString("%1 is not the correct size (4096 * 4096)").arg(fileName));
         return;
     }
@@ -74,22 +80,19 @@ void AllRgbWidget::onLoadPixelsRequested()
     for (qulonglong colourCount : colourCounts) {
         if (colourCount != 1) {
             QString uniqueColourCount = QLocale::system().toString(std::ranges::count(colourCounts, 1));
-            QString expectedUniqueColourCount = QLocale::system().toString(std::pow(allRgbEdge_, 2));
+            QString expectedUniqueColourCount = QLocale::system().toString(std::pow(4096, 2));
             QMessageBox::warning(this, "Invalid allRGB image", QString("%1 only contains %2 out of %3 colours)").arg(fileName, uniqueColourCount, expectedUniqueColourCount));
             return;
         }
     }
 
-    iterations_ = 0;
-    improvements_ = 0;
-
-    allRgb_ = newPixels;
+    emit onAllRgbUpdated(newPixels);
 }
 
 void AllRgbWidget::onResetViewRequested()
 {
     qreal edge = std::min(width(), height());
-    qreal scale = edge / allRgbEdge_;
+    qreal scale = edge / 4096;
     SetScale(scale);
     ResetTranslation();
     ResetRotation();
@@ -97,12 +100,16 @@ void AllRgbWidget::onResetViewRequested()
 
 void AllRgbWidget::onStartRequested()
 {
-    thread_.start();
+    if (target_.isNull()) {
+        QMessageBox::warning(this, "No Target", "Please click 'Update Target', or go to the other tab to load and set a target image.");
+        return;
+    }
+    algorithm_->onStartRequested();
 }
 
 void AllRgbWidget::onStopRequested()
 {
-    thread_.stop();
+    algorithm_->onStopRequested();
 }
 
 void AllRgbWidget::onSaveImageRequested()
@@ -118,7 +125,7 @@ void AllRgbWidget::paintEvent(QPaintEvent* /*event*/)
     p.save();
     // centre the image around the origin
     TransformPainter(p);
-    p.drawImage(QRectF(allRgb_.rect()).translated(allRgb_.rect().width() / -2, allRgb_.height() / -2), allRgb_, QRectF(target_.rect()));
+    p.drawImage(QRectF(allRgb_.rect()).translated(allRgb_.rect().width() / -2, allRgb_.height() / -2), allRgb_, QRectF(allRgb_.rect()));
     p.restore();
 
     // draw thumbnail of target
@@ -128,13 +135,13 @@ void AllRgbWidget::paintEvent(QPaintEvent* /*event*/)
 void AllRgbWidget::showEvent(QShowEvent* /*event*/)
 {
     onResetViewRequested();
+    getUpdateTimer_.start();
 }
 
-void AllRgbWidget::CreateDefaultTarget()
+void AllRgbWidget::onUpdateFromAlgorithm(QImage allRgb)
 {
-    QImage defaultTarget(allRgbEdge_, allRgbEdge_, QImage::Format::Format_RGB32);
-    defaultTarget.fill(Qt::black);
-    SetTargetImage(defaultTarget);
+    allRgb_ = allRgb.copy();
+    update();
 }
 
 void AllRgbWidget::ForEachPixel(QImage& target, const std::function<void (QImage&, int, int)>& action)
@@ -144,54 +151,4 @@ void AllRgbWidget::ForEachPixel(QImage& target, const std::function<void (QImage
             action(target, x, y);
         }
     }
-}
-
-void AllRgbWidget::ImproveAllRgbImage()
-{
-    const int repeats = 100000;
-    for (int i = 0; i < repeats; ++i) {
-        QPoint aLoc{ RandomNumber(0, allRgbEdge_ - 1), RandomNumber(0, allRgbEdge_ - 1) };
-        QPoint bLoc{ RandomNumber(0, allRgbEdge_ - 1), RandomNumber(0, allRgbEdge_ - 1) };
-        QRgb a = allRgb_.pixel(aLoc);
-        QRgb b = allRgb_.pixel(bLoc);
-
-        int aDifference = ColourDifference(a, target_.pixel(aLoc));
-        int bDifference = ColourDifference(b, target_.pixel(bLoc));
-
-        int aSwappedDifference = ColourDifference(a, target_.pixel(bLoc));
-        int bSwappedDifference = ColourDifference(b, target_.pixel(aLoc));
-
-        if ((aDifference + bDifference) > (aSwappedDifference + bSwappedDifference)) {
-            allRgb_.setPixel(aLoc, b);
-            allRgb_.setPixel(bLoc, a);
-            ++improvements_;
-        }
-    }
-    iterations_ += repeats;
-
-    update();
-    emit onIterationsChanged(iterations_);
-    emit onImprovementsChanged(improvements_);
-}
-
-int AllRgbWidget::RandomNumber(int min, int max) const
-{
-    std::uniform_int_distribution<int> distribution(min, max);
-    return distribution(entropy_);
-}
-
-int AllRgbWidget::ColourDifference(QRgb a, QRgb b) const
-{
-    int bDiff = qBlue(a) - qBlue(b);
-    int gDiff = qGreen(a) - qGreen(b);
-    int rDiff = qRed(a) - qRed(b);
-
-    /*
-     * std::pow ensures each difference is positive, and also places an emphasis
-     * on minimising the difference accross all colours.
-     *
-     * MAYBE A greater emphasis could be placed on green as the human eye
-     * percieves the most luminosity in the green channel.
-     */
-    return std::pow(bDiff, 2) + std::pow(gDiff, 2) + std::pow(rDiff, 2);
 }

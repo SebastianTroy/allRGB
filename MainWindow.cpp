@@ -2,6 +2,9 @@
 #include "./ui_MainWindow.h"
 
 #include "TargetImageWidget.h"
+#include "AlgorithmSinglePixelSwapRgb.h"
+#include "AlgorithmSinglePixelSwapHsv.h"
+#include "AlgorithmAreaAverageRgb.h"
 
 #include <QLocale>
 #include <QDesktopServices>
@@ -77,6 +80,25 @@ MainWindow::MainWindow(QWidget *parent)
     {
         ui->allRGBImprovementsValueLabel->setText(QLocale::system().toString(improvements));
     });
+
+    // Algorithm
+    std::vector<std::function<std::unique_ptr<AlgorithmBase>()>> algorithmFactories;
+    algorithmFactories.push_back([]() { return std::make_unique<AlgorithmSinglePixelSwapRgb>(); });
+    algorithmFactories.push_back([]() { return std::make_unique<AlgorithmSinglePixelSwapHsv>(); });
+    algorithmFactories.push_back([]() { return std::make_unique<AlgorithmAreaAverageRgb>(); });
+    connect(ui->allRgbSolverComboBox, &QComboBox::currentIndexChanged, this, [ui = ui, factory = algorithmFactories](int index)
+    {
+        if (size_t{ 0 } + index < factory.size()) {
+            auto algorithm = std::invoke(factory[index]);
+            ui->allRgbSolverDetailsTextBrowser->setText(algorithm->GetDescription());
+            ui->allRgbPreviewWidget->SetAlgorithm(std::move(algorithm));
+        }
+    }, Qt::QueuedConnection);
+    // Doing this after the connection ensures we start having connected up the currently selected item
+    for (const auto& factory : algorithmFactories) {
+        auto algorithm = std::invoke(factory);
+        ui->allRgbSolverComboBox->addItem(algorithm->GetName());
+    }
 
     // Result
     connect(ui->allRgbPreviewButton, &QPushButton::pressed, this, &MainWindow::onPreviewAllRgbRequested);

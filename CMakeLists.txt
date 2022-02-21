@@ -16,16 +16,24 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 
 set(PROJECT_SOURCES
         main.cpp
-        MainWindow.cpp
-        MainWindow.h
-        PanAndZoomWidget.h
-        PanAndZoomWidget.cpp
-        TargetImageWidget.h
-        TargetImageWidget.cpp
+        AlgorithmBase.h
+        AlgorithmBase.cpp
+        AlgorithmAreaAverageRgb.h
+        AlgorithmAreaAverageRgb.cpp
+        AlgorithmSinglePixelSwapHsv.h
+        AlgorithmSinglePixelSwapHsv.cpp
+        AlgorithmSinglePixelSwapRgb.h
+        AlgorithmSinglePixelSwapRgb.cpp
         AllRgbWidget.h
         AllRgbWidget.cpp
+        MainWindow.h
+        MainWindow.cpp
         MainWindow.ui
+        PanAndZoomWidget.h
+        PanAndZoomWidget.cpp
         Resources.qrc
+        TargetImageWidget.h
+        TargetImageWidget.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

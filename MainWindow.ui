@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="loadImageTab">
        <attribute name="title">
@@ -247,45 +247,41 @@ p, li { white-space: pre-wrap; }
            <string/>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
-           <item row="0" column="0" colspan="2">
-            <widget class="QPushButton" name="allRgbResetPixelsButton">
+           <item row="8" column="1">
+            <widget class="QLabel" name="allRGBImprovementsValueLabel">
              <property name="text">
-              <string>Reset allRGB</string>
-             </property>
-            </widget>
-           </item>
-           <item row="8" column="0" colspan="2">
-            <widget class="QPushButton" name="allRgbSaveButton">
-             <property name="text">
-              <string>Save</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="0">
-            <widget class="QPushButton" name="allRgbStartButton">
-             <property name="text">
-              <string>Start</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0" colspan="2">
-            <widget class="QPushButton" name="allRgbLoadButton">
-             <property name="text">
-              <string>Load allRGB</string>
-             </property>
-            </widget>
-           </item>
-           <item row="5" column="0">
-            <widget class="QLabel" name="allRGBIterationLabel">
-             <property name="text">
-              <string>Iterations:</string>
+              <string>00000000000000</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
              </property>
             </widget>
            </item>
+           <item row="5" column="0" colspan="2">
+            <widget class="QTextBrowser" name="allRgbSolverDetailsTextBrowser"/>
+           </item>
            <item row="6" column="0">
+            <widget class="QPushButton" name="allRgbStartButton">
+             <property name="text">
+              <string>Start</string>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="0" colspan="2">
+            <widget class="QPushButton" name="allRgbSaveButton">
+             <property name="text">
+              <string>Save</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="1">
+            <widget class="QPushButton" name="allRgbStopButton">
+             <property name="text">
+              <string>Stop</string>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="0">
             <widget class="QLabel" name="ImprovementsLabel">
              <property name="text">
               <string>Improvements:</string>
@@ -295,21 +291,7 @@ p, li { white-space: pre-wrap; }
              </property>
             </widget>
            </item>
-           <item row="2" column="0" colspan="2">
-            <widget class="QPushButton" name="allRgbResetViewButton">
-             <property name="text">
-              <string>Reset View</string>
-             </property>
-            </widget>
-           </item>
-           <item row="7" column="0" colspan="2">
-            <widget class="QPushButton" name="allRgbPreviewButton">
-             <property name="text">
-              <string>Preview</string>
-             </property>
-            </widget>
-           </item>
-           <item row="9" column="0" colspan="2">
+           <item row="11" column="0" colspan="2">
             <spacer name="allRgbOptionsSpacer">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -322,20 +304,31 @@ p, li { white-space: pre-wrap; }
              </property>
             </spacer>
            </item>
-           <item row="6" column="1">
-            <widget class="QLabel" name="allRGBImprovementsValueLabel">
+           <item row="1" column="0" colspan="2">
+            <widget class="QPushButton" name="allRgbLoadButton">
              <property name="text">
-              <string>00000000000000</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              <string>Load allRGB</string>
              </property>
             </widget>
            </item>
-           <item row="5" column="1">
-            <widget class="QLabel" name="allRGBIterationsValueLabel">
+           <item row="0" column="0" colspan="2">
+            <widget class="QPushButton" name="allRgbResetPixelsButton">
              <property name="text">
-              <string>00000000000000</string>
+              <string>Reset allRGB</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0" colspan="2">
+            <widget class="QPushButton" name="allRgbResetViewButton">
+             <property name="text">
+              <string>Reset View</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="allRgbOverlayLabel">
+             <property name="text">
+              <string>Solver:</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -343,16 +336,39 @@ p, li { white-space: pre-wrap; }
             </widget>
            </item>
            <item row="4" column="1">
-            <widget class="QPushButton" name="allRgbStopButton">
-             <property name="text">
-              <string>Stop</string>
-             </property>
-            </widget>
+            <widget class="QComboBox" name="allRgbSolverComboBox"/>
            </item>
            <item row="3" column="0" colspan="2">
             <widget class="QPushButton" name="allRgbUpdateTargetButton">
              <property name="text">
               <string>Update Target</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="0">
+            <widget class="QLabel" name="allRGBIterationLabel">
+             <property name="text">
+              <string>Iterations:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="0" colspan="2">
+            <widget class="QPushButton" name="allRgbPreviewButton">
+             <property name="text">
+              <string>Preview</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="1">
+            <widget class="QLabel" name="allRGBIterationsValueLabel">
+             <property name="text">
+              <string>00000000000000</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
              </property>
             </widget>
            </item>
