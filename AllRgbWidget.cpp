@@ -80,7 +80,7 @@ void AllRgbWidget::onLoadPixelsRequested()
     for (qulonglong colourCount : colourCounts) {
         if (colourCount != 1) {
             QString uniqueColourCount = QLocale::system().toString(std::ranges::count(colourCounts, 1));
-            QString expectedUniqueColourCount = QLocale::system().toString(std::pow(4096, 2));
+            QString expectedUniqueColourCount = QLocale::system().toString(4096u * 4096u);
             QMessageBox::warning(this, "Invalid allRGB image", QString("%1 only contains %2 out of %3 colours)").arg(fileName, uniqueColourCount, expectedUniqueColourCount));
             return;
         }
