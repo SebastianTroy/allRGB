@@ -1,27 +1,27 @@
-#include "AlgorithmAreaAverageRgb.h"
+#include "AlgorithmAreaAverageHsv.h"
 
-AlgorithmAreaAverageRgb::AlgorithmAreaAverageRgb(QObject *parent)
+AlgorithmAreaAverageHsv::AlgorithmAreaAverageHsv(QObject *parent)
     : AlgorithmBase{parent}
 {
 }
 
-QString AlgorithmAreaAverageRgb::GetName()
+QString AlgorithmAreaAverageHsv::GetName()
 {
-    return "Area Average RGB";
+    return "Area Average HSV";
 }
 
-QString AlgorithmAreaAverageRgb::GetDescription()
+QString AlgorithmAreaAverageHsv::GetDescription()
 {
     return "<p>Averages the colour in two zones in the RGB image and compares "
-           "the average colour in the same zones in the target "
-           "image. Then  pixels are swapped between the zones to minimise RGB "
+           "the the average HSV values in the same zones in the target "
+           "image. Then pixels are swapped between the zones to minimise HSV "
            "colour error</p>"
            "<p>Error is the sum of the difference between each of the red, "
            "green, & blue colour channels, for both pixels, when compared to "
            "the target image.</p>";
 }
 
-void AlgorithmAreaAverageRgb::Iterate()
+void AlgorithmAreaAverageHsv::Iterate()
 {
     // Do a block of repeats in one go for efficiency
     const int repeats = 100000;
@@ -29,8 +29,8 @@ void AlgorithmAreaAverageRgb::Iterate()
         QPoint aLoc{ RandomNumber(0, 4096 - 1), RandomNumber(0, 4096 - 1) };
         QPoint bLoc{ RandomNumber(0, 4096 - 1), RandomNumber(0, 4096 - 1) };
         const int areaSize = 3;
-        QRgb rgbA = GetAverageColourInArea(allRgb_, aLoc, areaSize);
-        QRgb rgbB = GetAverageColourInArea(allRgb_, bLoc, areaSize);
+        QRgb hsvA = GetAverageColourInArea(allRgb_, aLoc, areaSize);
+        QRgb hsvB = GetAverageColourInArea(allRgb_, bLoc, areaSize);
         QRgb targetA = GetAverageColourInArea(target_, aLoc, areaSize);
         QRgb targetB = GetAverageColourInArea(target_, bLoc, areaSize);
 
@@ -38,14 +38,14 @@ void AlgorithmAreaAverageRgb::Iterate()
         QRgb b = allRgb_.pixel(bLoc);
         allRgb_.setPixel(aLoc, b);
         allRgb_.setPixel(bLoc, a);
-        QRgb swappedRgbA = GetAverageColourInArea(allRgb_, aLoc, areaSize);
-        QRgb swappedRgbB = GetAverageColourInArea(allRgb_, bLoc, areaSize);
+        QRgb swappedHsvA = GetAverageColourInArea(allRgb_, aLoc, areaSize);
+        QRgb swappedHsvB = GetAverageColourInArea(allRgb_, bLoc, areaSize);
 
-        int aDifference = ColourDifference(rgbA, targetA);
-        int bDifference = ColourDifference(rgbB, targetB);
+        int aDifference = ColourDifference(hsvA, targetA);
+        int bDifference = ColourDifference(hsvB, targetB);
 
-        int aSwappedDifference = ColourDifference(swappedRgbA, targetA);
-        int bSwappedDifference = ColourDifference(swappedRgbB, targetB);
+        int aSwappedDifference = ColourDifference(swappedHsvA, targetA);
+        int bSwappedDifference = ColourDifference(swappedHsvB, targetB);
 
        if ((aDifference + bDifference) > (aSwappedDifference + bSwappedDifference)) {
            // Already swapped the pixels!
@@ -62,27 +62,31 @@ void AlgorithmAreaAverageRgb::Iterate()
     emit onImprovementsChanged(improvements_);
 }
 
-QRgb AlgorithmAreaAverageRgb::GetAverageColourInArea(const QImage& image, const QPoint& location, int areaSize) const
+QRgb AlgorithmAreaAverageHsv::GetAverageColourInArea(const QImage& image, const QPoint& location, int areaSize) const
 {
-    int totalRed = 0;
-    int totalGreen = 0;
-    int totalBlue = 0;
+    int totalHue = 0;
+    int totalSaturation = 0;
+    int totalValue = 0;
 
     // Make our area surround the target point
     QPoint topLeft = QPoint(location.x() - (areaSize / 2), location.y() - (areaSize / 2));
-    // Make sure our area is contained by our RGB and target images
+    // Make sure our area is contained by our HSV and target images
     topLeft.rx() = std::clamp(topLeft.x(), 0, image.width() - areaSize);
     topLeft.ry() = std::clamp(topLeft.y(), 0, image.height() - areaSize);
 
     for (int x = topLeft.x(); x < topLeft.x() + areaSize; ++x) {
         for (int y = topLeft.y(); y < topLeft.y() + areaSize; ++y) {
-            QRgb pixel = image.pixel(x, y);
-            totalRed += qRed(pixel);
-            totalGreen += qGreen(pixel);
-            totalBlue += qBlue(pixel);
+            QColor pixel = image.pixelColor(x, y);
+
+            int h, s, v;
+            pixel.getHsv(&h, &s, &v);
+
+            totalHue += h;
+            totalSaturation += s;
+            totalValue += v;
         }
     }
 
     const int count = std::pow(areaSize, 2);
-    return qRgb(totalRed / count, totalGreen / count, totalBlue / count);
+    return QColor::fromHsv(totalHue / count, totalSaturation / count, totalValue / count).rgb();
 }

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 
-project(allRGB VERSION 2 LANGUAGES CXX)
+project(allRGB VERSION 2.1 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -18,8 +18,12 @@ set(PROJECT_SOURCES
         main.cpp
         AlgorithmBase.h
         AlgorithmBase.cpp
+        AlgorithmAreaAverageHsv.h
+        AlgorithmAreaAverageHsv.cpp
         AlgorithmAreaAverageRgb.h
         AlgorithmAreaAverageRgb.cpp
+        AlgorithmExhaustiveRgb.h
+        AlgorithmExhaustiveRgb.cpp
         AlgorithmSinglePixelSwapHsv.h
         AlgorithmSinglePixelSwapHsv.cpp
         AlgorithmSinglePixelSwapRgb.h

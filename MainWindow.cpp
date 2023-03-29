@@ -5,6 +5,8 @@
 #include "AlgorithmSinglePixelSwapRgb.h"
 #include "AlgorithmSinglePixelSwapHsv.h"
 #include "AlgorithmAreaAverageRgb.h"
+#include "AlgorithmAreaAverageHsv.h"
+#include "AlgorithmExhaustiveRgb.h""
 
 #include <QLocale>
 #include <QDesktopServices>
@@ -17,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     setWindowIcon(QIcon(":/Logo.png"));
-    setWindowTitle("All RGB v2.0");
+    setWindowTitle("All RGB v2.1");
 
     ///
     /// Load Image Tab
@@ -86,6 +88,8 @@ MainWindow::MainWindow(QWidget *parent)
     algorithmFactories.push_back([]() { return std::make_unique<AlgorithmSinglePixelSwapRgb>(); });
     algorithmFactories.push_back([]() { return std::make_unique<AlgorithmSinglePixelSwapHsv>(); });
     algorithmFactories.push_back([]() { return std::make_unique<AlgorithmAreaAverageRgb>(); });
+    algorithmFactories.push_back([]() { return std::make_unique<AlgorithmAreaAverageHsv>(); });
+    algorithmFactories.push_back([]() { return std::make_unique<AlgorithmExhaustiveRgb>(); });
     connect(ui->allRgbSolverComboBox, &QComboBox::currentIndexChanged, this, [ui = ui, factory = algorithmFactories](int index)
     {
         if (size_t{ 0 } + index < factory.size()) {
